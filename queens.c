@@ -11,18 +11,24 @@
 
 typedef enum {false,true} bool;
 
+void continuar() {
+    printf("\n Pressione [Enter] para outra solucao.");
+    while (getchar() !='\n');
+}
+
 int color(int i, int j) {
     return (i+j)%2;
 }
  
 void printBoard(int board[N][N]) {
     system("clear");
+    static int k = 1;
     int i,j;
-    printf("\n N-QUEENS\n\n");
+    printf("\n N-QUEENS (Solucao %0d)\n\n", k++);
     for (i=0; i<N; i++) {
         printf(" %d ", i+1);
         for (j=0; j<N; j++)
-            if(!color(i,j)) {
+            if (!color(i,j)) {
                 if (board[i][j])
                     printf(COLOR_BGW COLOR_BLK " \u265B " COLOR_RESET);
                 else
@@ -45,6 +51,7 @@ void printBoard(int board[N][N]) {
 
 bool valida(int board[N][N], int row, int col) {
     int i,j;
+
     for (i=0; i<col; i++)
         if (board[row][i])
             return false;
@@ -56,11 +63,11 @@ bool valida(int board[N][N], int row, int col) {
     for (i=row, j=col; j>=0 && i<N; i++,j--)
         if (board[i][j])
             return false;
- 
+
     return true;
 }
  
-bool solve(int board[N][N], int col) {
+/* bool solve(int board[N][N], int col) {
     int i;
     if (col>=N) return true;
     for (i=0; i<N; i++) {
@@ -72,6 +79,26 @@ bool solve(int board[N][N], int col) {
         }
     }
     return false;
+} */
+
+bool solve(int board[N][N], int col) {
+    int i;
+    bool solucao = false;
+    
+    if (col == N) {
+        printBoard(board);
+        continuar();
+        return true;
+    }
+    
+    for (i=0; i<N; i++) {
+        if (valida(board,i,col)) {
+            board[i][col] = 1;
+            solucao = solve(board,col+1) || solucao;
+            board[i][col] = 0;
+        }
+    }
+    return solucao;
 }
  
 bool callNQ() {
