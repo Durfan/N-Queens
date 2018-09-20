@@ -105,7 +105,7 @@ void callNQ() {
     int board[N][N];
     memset(board,0,sizeof(board));
     if (!solve(board,0)) {
-        printf("Nao existe uma solucao.");
+        printf("Nao existe uma solucao.\n");
         return;
     }
     return;
