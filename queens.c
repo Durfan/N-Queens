@@ -101,15 +101,14 @@ bool solve(int board[N][N], int col) {
     return solucao;
 }
  
-bool callNQ() {
+void callNQ() {
     int board[N][N];
-    memset(board,0,sizeof board);
+    memset(board,0,sizeof(board));
     if (!solve(board,0)) {
-        printf("Invalido.");
-        return false;
+        printf("Nao existe uma solucao.");
+        return;
     }
-    printBoard(board);
-    return true;
+    return;
 }
  
 int main(void) {
