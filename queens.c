@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 typedef enum {false,true} bool;
 
@@ -16,15 +17,25 @@ void continuar() {
     while (getchar() !='\n');
 }
 
+void wait(unsigned int secs) {              // Espera X segundos
+    unsigned int retTime = time(0) + secs;  // Get finishing time.
+    while (time(0) < retTime);              // Loop until it arrives.
+}
+
 int color(int i, int j) {
     return (i+j)%2;
 }
+
+int countSLT() {
+    static int k = 0;
+    return k++;
+}
  
-void printBoard(int board[N][N]) {
+void printBoard(int board[N][N], int delay) {
     system("clear");
-    static int k = 1;
     int i,j;
-    printf("\n N-QUEENS (Solucao %d)\n\n", k++);
+    if (delay) printf("\n N-QUEENS (delay=1s)\n\n");
+    else printf("\n N-QUEENS\n\n");
     for (i=0; i<N; i++) {
         printf(" %d ", i+1);
         for (j=0; j<N; j++)
@@ -46,7 +57,8 @@ void printBoard(int board[N][N]) {
     for (i=0; i<N; i++) {
         printf(" %c ", i+97);
     }
-    printf("\n");
+    if (delay) printf("\n\n Processando...\n (ctrl+c para abortar)\n");
+    else printf("\n");
 }
 
 bool valida(int board[N][N], int row, int col) {
@@ -81,12 +93,13 @@ bool valida(int board[N][N], int row, int col) {
     return false;
 } */
 
-bool solve(int board[N][N], int col) {
+bool solve(int board[N][N], int col, int delay) {
     int i;
     bool solucao = false;
     
     if (col == N) {
-        printBoard(board);
+        printBoard(board,delay);
+        printf("\n Solucao: %d", countSLT());
         continuar();
         return true;
     }
@@ -94,17 +107,27 @@ bool solve(int board[N][N], int col) {
     for (i=0; i<N; i++) {
         if (valida(board,i,col)) {
             board[i][col] = 1;
-            solucao = solve(board,col+1) || solucao;
+            printBoard(board,delay);
+            if (delay) wait(1);
+            solucao = solve(board,col+1,delay) || solucao;
             board[i][col] = 0;
+            printBoard(board,delay);
+            if (delay) wait(1);
         }
     }
     return solucao;
 }
  
 void callNQ() {
+    system("clear");
     int board[N][N];
+    bool delay = false;
+    char ask;
     memset(board,0,sizeof(board));
-    if (!solve(board,0)) {
+    printf("\n Usar o delay para visualizar o backtracking? [s/n]");
+    ask = getchar();
+    if (ask == 's') delay = true;
+    if (!solve(board,0,delay)) {
         printf("Nao existe uma solucao.\n");
         return;
     }
