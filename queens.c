@@ -24,7 +24,7 @@ void printBoard(int board[N][N]) {
     system("clear");
     static int k = 1;
     int i,j;
-    printf("\n N-QUEENS (Solucao %0d)\n\n", k++);
+    printf("\n N-QUEENS (Solucao %d)\n\n", k++);
     for (i=0; i<N; i++) {
         printf(" %d ", i+1);
         for (j=0; j<N; j++)
